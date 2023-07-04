@@ -9,14 +9,17 @@ form.addEventListener("click", async (e) => {
   const password = document.getElementById("password").value;
   console.log(email)
   console.log(password)
+
   // Prevent the form from auto-submitting
   e.preventDefault();
+
   // Request POST to login with the user input
   const response = await fetch("http://localhost:5678/api/users/login", {
     method: "POST",
     headers: {"Content-Type": "application/json" },
     body: JSON.stringify({ email, password }), // Add user input into request body
   })
+  
   // Check if the previous request is successful
   if (response.ok === true) {
     const data = await response.json(); // Get data from response
