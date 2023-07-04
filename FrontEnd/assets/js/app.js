@@ -1,26 +1,21 @@
-// API
-async function dataWorks() { 
-    const response = await fetch("http://localhost:5678/api/works");
-    if (response.ok === true) {
-        console.log("Connexion dataWork : Successful");
-        return response.json();
-      } else {
-        console.log("Error Connexion API : " + response.error);
-      }
-}
-console.log(dataWorks());
-
-async function dataCategories() {
-  const response = await fetch("http://localhost:5678/api/categories");
+// ---------- API ----------
+const token = localStorage.accessToken;
+// Function to get all the data from the database
+async function dataBaseInfo(type) {
+  const response = await fetch("http://localhost:5678/api/" + type);
   if (response.ok === true) {
-      console.log("Connexion dataCategories : Successful");
-      return response.json();
-    } else {
-      console.log("Error Connexion API : " + response.error);
-    }
+    console.log("Connexion database : Successful");
+    return response.json();
+  } else {
+    console.log("Error Connexion API : " + response.error);
+  }
 }
-console.log(dataCategories());
+console.log(dataBaseInfo("works"));
+console.log(dataBaseInfo("categories"));
 
+
+
+// ---------- DOM ----------
 // VARIABLES
 const gallery = document.querySelector("#gallery")
 
@@ -31,7 +26,7 @@ const btn = document.getElementsByClassName("button");
 
 // PROJECT
 async function project() {
-  const dataProjectAPI = await dataWorks();
+  const dataProjectAPI = await dataBaseInfo("works");
   dataProjectAPI.forEach((galleryImg) => {
     const imgProject = document.createElement("div");
     const imgSophie = document.createElement("img");
@@ -57,7 +52,7 @@ buttonGeneric.appendChild(buttonT);
 
 // BUTTONS FILTER
 async function button() {
-  const dataButton = await dataCategories();
+  const dataButton = await dataBaseInfo("categories");
   console.log(dataButton);
   dataButton.forEach((btn) => {
     const btnSite = document.createElement("button");
@@ -71,8 +66,8 @@ button();
 
 // FILTER
 async function filtreTravaux() {
-  const dataFiltreTravaux = await dataWorks();
-  const buttonBis = await dataCategories();
+  const dataFiltreTravaux = await dataBaseInfo("works");
+  const buttonBis = await dataBaseInfo("categories");
   for (let i = 0; i < btn.length; i++) {
     btn[i].addEventListener("click", () => {
       console.log(btn[i]);
@@ -100,3 +95,34 @@ async function filtreTravaux() {
   }
 }
 filtreTravaux();
+
+// ---------- MODAL ----------
+
+// INTERFACE LOGIN/OGOUT
+const banner = document.querySelector(".mode-edition");
+const modifierUn = document.querySelector(".modifier1");
+const modifierDeux = document.querySelector(".minibloch2");
+const logInOut = document.querySelector(".log-in-out");
+const link = document.querySelector("#link");
+
+function editMode() {
+  if (localStorage.getItem("token")) {
+    banner.style = "display:flex";
+    buttonGeneric.style = "display:none";
+    modifierUn.style = "display:flex";
+    modifierDeux.style = "display:flex";
+    logInOut.innerText = "logout";
+    logInOut.addEventListener("click", () => {
+      localStorage.removeItem("token");
+      link.href = "index.html";
+    });
+    console.log("Check");
+  } else {
+    banner.style = "display:none";
+    buttonGeneric.style = "display:flex";
+    modifierUn.style = "display:none";
+    modifierDeux.style = "display:none";
+    console.log("No check");
+  }
+}
+editMode();

@@ -1,35 +1,35 @@
-const form = document.querySelector('#connexion');
-console.log (form)
-form.addEventListener("click", (e) => {
+// ---------- DOM Elements ----------
+const form = document.getElementById("connexion");
+console.log (form);
+
+// ---------- EventListener ----------
+form.addEventListener("click", async (e) => {
+  // Get the user input
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  console.log(email)
+  console.log(password)
+  // Prevent the form from auto-submitting
   e.preventDefault();
-
-const email = document.querySelector("#email").value;
-const password = document.querySelector("#password").value;
-console.log(email)
-console.log(password)
-
-fetch("http://localhost:5678/api/users/login", {
+  // Request POST to login with the user input
+  const response = await fetch("http://localhost:5678/api/users/login", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json;charset=utf-8"
-    },
-    body: JSON.stringify({ email, password })
+    headers: {"Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }), // Add user input into request body
   })
-  .then(response => {
-    if (response.ok) {
-        console.log("Connexion mode admin : Successful");
-      return response.json();
-    }
-    else {
-      throw new Error('Erreur dans l’identifiant ou le mot de passe');
-    }
-  })
-  .then(data => {
-    localStorage.setItem("token", data.token);
-    window.location.href="index.html"
-  })
-  .catch(error => {
-    alert(error.message);
-    console.error(error);
-  });
+  // Check if the previous request is successful
+  if (response.ok === true) {
+    const data = await response.json(); // Get data from response
+    localStorage.setItem("accessToken", data.token); // Save the token in localStorage
+    window.location.href ="./index.html"; // Redirect to index.html
+    console.log("Connexion mode admin : Successful");
+  } else {
+    const connexion = document.querySelector("div"); // Select HTML element where to display the error message
+    const error = document.createElement("p"); // Create HTML element to display to display the error message
+    error.innerText = "Erreur dans l’identifiant ou le mot de passe";
+    error.style.color = "red";
+    error.style.textAlign = "center";
+    error.style.marginBottom = "25px";
+    connexion.insertBefore(error, connexion.lastElementChild); // Position the error message
+  };
 });
