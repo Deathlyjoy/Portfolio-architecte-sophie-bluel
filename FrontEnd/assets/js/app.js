@@ -1,14 +1,22 @@
 // API
-async function fetchWorks() {
+async function dataWorks() { 
     const response = await fetch("http://localhost:5678/api/works");
     if (response.ok === true) {
-        console.log("Connexion API : Successful");
+        console.log("Connexion dataWork : Successful");
         return response.json();
       } else {
         console.log("Error Connexion API : " + response.error);
       }
-    // const data = await response.json();
-    // console.log(data);
-    // return data;
 }
-console.log(fetchWorks());
+console.log(dataWorks());
+
+async function dataCategories() {
+  const response = await fetch("http://localhost:5678/api/categories");
+  if (response.ok === true) {
+      console.log("Connexion dataCategories : Successful");
+      return response.json();
+    } else {
+      console.log("Error Connexion API : " + response.error);
+    }
+}
+console.log(dataCategories());
