@@ -152,7 +152,8 @@ function editMode() {
 function logOutUser() {
   logMode.addEventListener("click", (e) => {
     e.preventDefault();
-    sessionStorage.clear();
+    sessionStorage.removeItem("accessToken");
     window.location.reload();
   });
 }
+
