@@ -1,5 +1,5 @@
 // ---------- API ----------
-const token = localStorage.accessToken;
+const token = sessionStorage.accessToken;
 // Function to get all the data from the database
 async function dataBaseInfo(type) {
   const response = await fetch("http://localhost:5678/api/" + type);
@@ -14,7 +14,11 @@ console.log(dataBaseInfo("works"));
 console.log(dataBaseInfo("categories"));
 
 // ---------- DOM Elements ----------
-const gallery = document.querySelector("#gallery")
+const gallery = document.getElementById("gallery");
+const filters = document.getElementById("filters");
+const logMode = document.getElementById("login");
+const banner = document.querySelector(".edition");
+
 
 
 // ---------- Variables ----------
@@ -34,12 +38,15 @@ async function init() {
       dataCategories.add(categorie);
     }
 
-    //Modal
-    // if (token) {
+    // Display elements depending on the mode (login/logout)
+    if (token) { // Admin Mode
+      userInterface();
 
-    // } else {
-    //   displayFilterButton();
-    // }
+
+      // logOutUser(); // Allow the user to logout
+    } else { // Visitor Mode
+      displayFilterButton();
+    }
 
     // Display the gallery
     displayGallery();
@@ -49,15 +56,14 @@ async function init() {
 }
 init()
 
-
-// ---------- Functions ----------
-// Display the gallery depending on the filter
+// ---------- Display the gallery depending on the filter ----------
 function displayGallery(filter = 0) {
   let filterData = dataWorks;
   console.log(filterData);
+
   // Check if a filter is selected
   if (filter != 0) {
-    filterData = [...dataWorks].filter((work) => work.categoryId == filter); // On utilise la méthode "filter" pour filtrer les travaux en fonction de la catégorie sélectionnée
+    filterData = [...dataWorks].filter(work => work.categoryId == filter);
   }
   console.log(filter);
 
@@ -82,120 +88,56 @@ function displayGallery(filter = 0) {
     titleProject.textContent = work.title;
     project.appendChild(titleProject);
 
-    // Attach project to the gallery
+    // Attach project to the HTML element gallery
     gallery.appendChild(project);
   }
 }
 
+// ---------- Display the filter buttons ----------
+function displayFilterButton() {
+  const filterBar = document.createDocumentFragment(); // Create a fragment to add the buttons and to avoid reflow
 
-// // ---------- DOM ----------
-// // VARIABLES
-// 
+  // Create button filter with the categorie "All"
+  const filterAll = document.createElement("div");
+  filterAll.classList.add("active");
+  filterAll.classList.add("filter");
+  filterAll.dataset.id = 0;
+  filterAll.textContent = "Tous";
+  filterBar.appendChild(filterAll);
 
-// const buttonGeneric = document.querySelector("#btn-generic");
-// const allProject = document.querySelectorAll("#gallery > div");
+  // Create button filter for each category in the database
+  for (const categorie of dataCategories) {
+    const filterButton = document.createElement("div");
+    filterButton.classList.add("filter");
+    filterButton.dataset.id = categorie.id;
+    filterButton.textContent = categorie.name;
+    filterBar.appendChild(filterButton);
+  }
 
-// const btn = document.getElementsByClassName("button");
+  // Attach filterBar to the HTML element filters
+  filters.appendChild(filterBar);
 
-// // PROJECT
-// async function project() {
-//   const dataProjectAPI = await dataBaseInfo("works");
-//   dataProjectAPI.forEach((galleryImg) => {
-//     const imgProject = document.createElement("div");
-//     const imgSophie = document.createElement("img");
-//     const titleSophie = document.createElement("h3");
-//     imgSophie.src = `${galleryImg.imageUrl}`;
-//     titleSophie.innerText = `${galleryImg.title}`;
-//     imgProject.appendChild(imgSophie);
-//     imgProject.appendChild(titleSophie);
-//     gallery.appendChild(imgProject);
-//   });
-// }
-// project();
+  // Add event listener to filter works by category
+  const buttonFilter = document.querySelectorAll(".filter");
+  for (const button of buttonFilter) {
+    button.addEventListener("click", (e) => {
+      const clickedButton = e.target;
+      const categoryId = parseInt(clickedButton.dataset.id);
 
-// // BUTTON "TOUS"
-// const buttonT = document.createElement("button");
-// buttonT.setAttribute("categoryId", "0");
-// buttonT.innerText = "Tous";
-// buttonT.setAttribute("class", "button");
-// buttonT.addEventListener("click", () => {
-//   allProject.forEach((div) => (div.style.display = "block"));
-// });
-// buttonGeneric.appendChild(buttonT);
+      // Generate works depending on the selected filter
+      displayGallery(categoryId);
 
-// // BUTTONS FILTER
-// async function button() {
-//   const dataButton = await dataBaseInfo("categories");
-//   console.log(dataButton);
-//   dataButton.forEach((btn) => {
-//     const btnSite = document.createElement("button");
-//     btnSite.innerText = `${btn.name}`;
-//     btnSite.setAttribute("class", "button");
-//     btnSite.setAttribute("categoryId", `${btn.id}`);
-//     buttonGeneric.appendChild(btnSite);
-//   });
-// }
-// button();
+      // Delete class "active" on the previous button selected
+      document.querySelector(".active").classList.remove("active");
 
-// // FILTER
-// async function filtreTravaux() {
-//   const dataFiltreTravaux = await dataBaseInfo("works");
-//   const buttonBis = await dataBaseInfo("categories");
-//   for (let i = 0; i < btn.length; i++) {
-//     btn[i].addEventListener("click", () => {
-//       console.log(btn[i]);
-//       let ctgId = btn[i].getAttribute("categoryId");
-//       console.log(ctgId);
-//       if (ctgId == 0) {
-//         gallery.innerHTML = "";
-//         project();
-//       } else {
-//         gallery.innerHTML = "";
-//         dataFiltreTravaux.forEach((galleryImg) => {
-//           if (galleryImg.categoryId == ctgId) {
-//             const imgProjet = document.createElement("div");
-//             const imgSophie = document.createElement("img");
-//             const titleSophie = document.createElement("h3");
-//             imgSophie.src = `${galleryImg.imageUrl}`;
-//             titleSophie.innerText = `${galleryImg.title}`;
-//             imgProjet.appendChild(imgSophie);
-//             imgProjet.appendChild(titleSophie);
-//             gallery.appendChild(imgProjet);
-//           }
-//         });
-//       }
-//     });
-//   }
-// }
-// filtreTravaux();
+      // Add class "active" on the new button selected
+      clickedButton.classList.add("active");
+    });
+  }
+}
 
-// // ---------- MODAL ----------
-
-// // INTERFACE LOGIN/OGOUT
-// const banner = document.querySelector(".mode-edition");
-// const modifierUn = document.querySelector(".modifier1");
-// const modifierDeux = document.querySelector(".minibloch2");
-// const logInOut = document.querySelector(".log-in-out");
-// const link = document.querySelector("#link");
-
-// function editMode() {
-//   if (localStorage.getItem("token")) {
-//     banner.style = "display:flex";
-//     buttonGeneric.style = "display:none";
-//     modifierUn.style = "display:flex";
-//     modifierDeux.style = "display:flex";
-//     logInOut.innerText = "logout";
-//     logInOut.addEventListener("click", () => {
-//       localStorage.removeItem("token");
-//       link.href = "index.html";
-//     });
-//     console.log("Check");
-//   } else {
-//     banner.style = "display:none";
-//     buttonGeneric.style = "display:flex";
-//     modifierUn.style = "display:none";
-//     modifierDeux.style = "display:none";
-//     console.log("No check");
-//   }
-// }
-// editMode();
+// ---------- Display the interface of the modal in edition mode ----------
+function userInterface() {
+  banner.style = "display : flex";
+  logMode.textContent = "logout";
+}

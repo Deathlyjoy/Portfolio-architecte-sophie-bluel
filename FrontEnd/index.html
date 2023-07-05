@@ -13,30 +13,33 @@
 	<script src="./assets/js/app.js" defer></script>
 </head>
 <body>
-	<div class="mode-edition">
+	<!-- Banner in edition mode-->
+	<div class="edition">
 		<i class="fa-solid fa-pen-to-square write icon-style"></i>
 		<p class="mode-text">Mode éditon</p>
 		<p class="mode-chgmt">publier les changements</p>
 	</div>
+	<!-- Header -->
 	<header>
 		<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
 		<nav>
 			<ul>
 				<li><a href="#portfolio">projets</a></li>
 				<li><a href="#contact">contact</a></li>
-				<li><a href="./login.html" id="link">login</a></li>
+				<li><a href="./login.html" id="login">login</a></li>
 				<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
 			</ul>
 		</nav>
 	</header>
+	<!-- Main container -->
 	<main>
 		<section id="introduction">
 			<figure>
 				<img src="./assets/images/sophie-bluel.png" alt="">
-				<div class="modifier1">
+				<!-- <div class="modifier1">
 					<i class="fa-solid fa-pen-to-square write"></i>
 					<p>modifier</p>
-				</div>
+				</div> -->
 			</figure>
 			<article>
 				<h2>Designer d'espace</h2>
@@ -48,13 +51,13 @@
 		<section id="portfolio">
 			<div class="modifier2">
 				<h2>Mes Projets</h2>
-				<div class="minibloch2">	
+				<!-- <div class="minibloch2">	
 					<i class="fa-solid fa-pen-to-square write"></i>
 					<p><a href="#modal" class="js-modal">modifier</a></p>
-				</div>
+				</div> -->
 			</div>
-			<div id="btn-generic"></div>
-			<div id="gallery"></div>
+			<div id="filters"></div> <!-- Buttons filter -->
+			<div id="gallery"></div> <!-- Gallery Works -->
 		</section>
 		<section id="contact">
 			<h2>Contact</h2>
@@ -70,6 +73,7 @@
 			</form>
 		</section>
 	</main>
+	<!-- Footer -->
 	<footer>
 		<nav>
 			<ul>

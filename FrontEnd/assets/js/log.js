@@ -23,8 +23,8 @@ form.addEventListener("click", async (e) => {
   // Check if the previous request is successful
   if (response.ok === true) {
     const data = await response.json(); // Get data from response
-    localStorage.setItem("accessToken", data.token); // Save the token in localStorage
-    window.location.href ="./index.html"; // Redirect to index.html
+    sessionStorage.setItem("accessToken", data.token); // Save the token in sessionStorage
+    window.location.href = "./index.html"; // Redirect to index.html
     console.log("Connexion mode admin : Successful");
   } else {
     const connexion = document.querySelector("div"); // Select HTML element where to display the error message
