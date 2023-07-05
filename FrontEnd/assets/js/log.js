@@ -7,8 +7,6 @@ form.addEventListener("click", async (e) => {
   // Get the user input
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
-  console.log(email)
-  console.log(password)
 
   // Prevent the form from auto-submitting
   e.preventDefault();

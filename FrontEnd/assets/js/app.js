@@ -1,5 +1,5 @@
 // ---------- API ----------
-const token = sessionStorage.accessToken;
+const token = sessionStorage.getItem("accessToken");
 // Function to get all the data from the database
 async function dataBaseInfo(type) {
   const response = await fetch("http://localhost:5678/api/" + type);
@@ -18,6 +18,8 @@ const gallery = document.getElementById("gallery");
 const filters = document.getElementById("filters");
 const logMode = document.getElementById("login");
 const banner = document.querySelector(".edition");
+const buttonEdit = document.querySelectorAll(".btn-edit");
+
 
 
 
@@ -40,10 +42,10 @@ async function init() {
 
     // Display elements depending on the mode (login/logout)
     if (token) { // Admin Mode
-      userInterface();
+      editMode();
 
 
-      // logOutUser(); // Allow the user to logout
+      logOutUser();
     } else { // Visitor Mode
       displayFilterButton();
     }
@@ -137,7 +139,20 @@ function displayFilterButton() {
 }
 
 // ---------- Display the interface of the modal in edition mode ----------
-function userInterface() {
+function editMode() {
   banner.style = "display : flex";
-  logMode.textContent = "logout";
+  logMode.innerText = "logout";
+  for (const button of buttonEdit) {
+    button.style = "display : flex";
+  }
+}
+
+
+// ---------- Log Out admin mode ----------
+function logOutUser() {
+  logMode.addEventListener("click", (e) => {
+    e.preventDefault();
+    sessionStorage.clear();
+    window.location.reload();
+  });
 }

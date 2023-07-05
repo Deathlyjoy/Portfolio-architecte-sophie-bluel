@@ -246,26 +246,10 @@ footer nav ul {
 	margin-right: 8px;
 }
 
-.mode-chgmt {
-	background-color: white;
-	margin-left: 20px;
-	padding: 8px 15px;
-	border-radius: 50px;
-}
-
-.modifier1 {
-	display: flex;
+.btn-edit {
+	display: none;
 	margin-left: 10%;
 	margin-top: 15px;
-}
-
-.modifier2 {
-	display: flex;
-	justify-content: center;
-}
-
-.minibloch2 {
-	display: flex;
-	margin-top: 10px;
-	margin-left: 20px;
-}
+	width: 15%;
+	cursor: pointer;
+  }
