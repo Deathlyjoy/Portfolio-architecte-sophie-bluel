@@ -34,6 +34,75 @@ const dataWorks = new Set();
 const dataCategories = new Set();
 let file = "";
 
+// ---------- Display the interface modal admin mode ----------
+function editMode() {
+  banner.style = "display : flex";
+  logMode.innerText = "logout";
+  for (const button of buttonEdit) {
+    button.style = "display : flex";
+    modal1.style.display = `flex`;
+  }
+}
+
+// ---------- Display the gallery of the modal in edition mode ----------
+function showWorksInModal() {
+  //Vide le contenu de la fenêtre modale
+  worksContainer.innerHTML = "";
+  // Pour chaque travail je :
+  dataWorks.forEach((work) => {
+    const figureModal = document.createElement(`figure`);
+    const figureImgModal = document.createElement(`img`);
+    const editButton = document.createElement(`button`);
+    const delButton = document.createElement(`button`);
+    // récupère l'image et le titre
+    figureModal.dataset.id = work.id;
+    figureImgModal.src = work.imageUrl;
+    figureImgModal.alt = work.title;
+    editButton.innerText = `éditer`;
+    editButton.classList.add(`editer`);
+    delButton.innerHTML = `<i class="fa-solid fa-trash-can"></i>`;
+    delButton.classList.add(`delete`);
+    // Ajout d'un event pour la suppression
+    delButton.addEventListener("click", async (e) => {
+      const figure = e.target.closest("figure");
+      const id = figure.dataset.id;
+      const deleteCode = await confirmDelWork(id);
+      // chaque cas ... un code d'erreur différent
+      switch (deleteCode) {
+        case 204:
+          figure.remove();
+          const galleryFigure = document.querySelector("#project-" + id);
+          galleryFigure.remove();
+
+          // Permet de supp l'img dans le Set
+          for (const work of dataWorks) {
+            if (work.id == id) {
+              dataWorks.delete(work);
+              break;
+            }
+          }
+          break;
+        case 401:
+          alert("accès non autorisé");
+          break;
+        case 500:
+          alert("problème de serveur, veuillez réesayez plus tard");
+          break;
+        case "abort":
+          alert("opération annulé");
+          break;
+        default:
+          alert("cas imprévu :" + deleteCode);
+          break;
+      }
+    });
+
+    worksContainer.appendChild(figureModal);
+    figureModal.append(figureImgModal, editButton, delButton);
+  });
+}
+
+
 // ---------- Initialisation ----------
 async function init() {
   try {
@@ -51,13 +120,12 @@ async function init() {
     if (token) { // Admin Mode
       editMode();
       showWorksInModal();
+      logOutUser();
       getSelectCategory();
       initAddModale();
-      logOutUser();
     } else { // Visitor Mode
       displayFilterButton();
     }
-
     // Display the gallery
     displayGallery();
   } catch (error) {
@@ -146,74 +214,6 @@ function displayFilterButton() {
   }
 }
 
-// ---------- Display the interface admin mode ----------
-function editMode() {
-  banner.style = "display : flex";
-  logMode.innerText = "logout";
-  for (const button of buttonEdit) {
-    button.style = "display : flex";
-    modal1.style.display = `flex`;
-    modalContainer.style = `display : flex`;
-  }
-}
-
-// ---------- Display the gallery of the modal in edition mode ----------
-function showWorksInModal() {
-  //Vide le contenu de la fenêtre modale
-  worksContainer.innerHTML = "";
-  // Pour chaque travail je :
-  dataWorks.forEach((work) => {
-    const figureModal = document.createElement(`figure`);
-    const figureImgModal = document.createElement(`img`);
-    const editButton = document.createElement(`button`);
-    const delButton = document.createElement(`button`);
-    // récupère l'image et le titre
-    figureModal.dataset.id = work.id;
-    figureImgModal.src = work.imageUrl;
-    figureImgModal.alt = work.title;
-    editButton.innerText = `éditer`;
-    editButton.classList.add(`editer`);
-    delButton.innerHTML = `<i class="fa-solid fa-trash-can"></i>`;
-    delButton.classList.add(`delete`);
-    // Ajout d'un event pour la suppression
-    delButton.addEventListener("click", async (e) => {
-      const figure = e.target.closest("figure");
-      const id = figure.dataset.id;
-      const deleteCode = await confirmDelWork(id);
-      // chaque cas ... un code d'erreur différent
-      switch (deleteCode) {
-        case 204:
-          figure.remove();
-          const galleryFigure = document.querySelector("#figure-" + id);
-          galleryFigure.remove();
-
-          // Permet de supp l'img dans le Set
-          for (const work of dataWorks) {
-            if (work.id == id) {
-              dataWorks.delete(work);
-              break;
-            }
-          }
-          break;
-        case 401:
-          alert("accès non autorisé");
-          break;
-        case 500:
-          alert("problème de serveur, veuillez réesayez plus tard");
-          break;
-        case "abort":
-          alert("opération annulé");
-          break;
-        default:
-          alert("cas imprévu :" + deleteCode);
-          break;
-      }
-    });
-
-    worksContainer.appendChild(figureModal);
-    figureModal.append(figureImgModal, editButton, delButton);
-  });
-}
 
 //**************************************************************** */
 // Permet d'appuyer et d'afficher la modale
@@ -358,10 +358,10 @@ function initAddModale() {
       alert("Votre projet à bien été rajouté ");
       // Ajout du nouveau travail à la liste de travaux
       const newWork = await AddWork(formData);
-      allWorks.add(newWork);
+      dataWorks.add(newWork);
       // Rappel des fonctions pour les Works
       showWorksInModal();
-      genererWorks();
+      displayGallery();
       // Réinitialisation du formulaire
       upTitle.value = "";
       uploadImg.files[0] = "";

@@ -297,7 +297,7 @@ footer nav ul {
 	cursor: pointer;
   }
 
-  .modalContainer {
+.modalContainer {
 	display: none;
 	justify-content: center;
 	align-items: center;
@@ -308,7 +308,7 @@ footer nav ul {
 	top: 0;
 	left: 0;
 	z-index: 1;
-  }
+}
   .modal1,
   .modal2 {
 	display: none;
