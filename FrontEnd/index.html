@@ -17,7 +17,7 @@
 	<div class="edition">
 		<i class="fa-solid fa-pen-to-square write icon-style"></i>
 		<p class="mode-text">Mode éditon</p>
-		<p class="mode-chgmt">publier les changements</p>
+		<p class="publish">publier les changements</p>
 	</div>
 	<!-- Header -->
 	<header>
@@ -36,15 +36,14 @@
 		<section id="introduction">
 			<figure>
 				<img src="./assets/images/sophie-bluel.png" alt="">
-				<div class="btn-edit">
+				<div class="btn-edit btn-edit0">
 					<i class="fa-regular fa-pen-to-square"></i>modifier
 				</div>
-				<!-- <div class="modifier1">
-					<i class="fa-solid fa-pen-to-square write"></i>
-					<p>modifier</p>
-				</div> -->
 			</figure>
 			<article>
+				<div class="btn-edit btn-edit1">
+					<i class="fa-regular fa-pen-to-square"></i>modifier
+				</div>
 				<h2>Designer d'espace</h2>
 				<p>Je raconte votre histoire, je valorise vos idées. Je vous accompagne de la conception à la livraison finale du chantier.</p>
 				<p>Chaque projet sera étudié en commun, de façon à mettre en valeur les volumes, les matières et les couleurs dans le respect de l’esprit des lieux et le choix adapté des matériaux. Le suivi du chantier sera assuré dans le souci du détail, le respect du planning et du budget.</p>
@@ -52,13 +51,54 @@
 			</article>
 		</section>
 		<section id="portfolio">
-			<div class="modifier2">
+			<div class="btn-flex">
 				<h2>Mes Projets</h2>
-				<!-- <div class="minibloch2">	
-					<i class="fa-solid fa-pen-to-square write"></i>
-					<p><a href="#modal" class="js-modal">modifier</a></p>
-				</div> -->
+				<div class="btn-edit btn-edit2">
+					<i class="fa-regular fa-pen-to-square"></i>modifier
+				</div>
 			</div>
+			<div class="modalContainer"> <!-- Modal -->
+				<div class="modal1">
+				  <div class="flex-galery">
+					<span class="closeModal1">
+					  <i class="fa-regular fa-xmark"></i>
+					</span>
+					<h2>Galerie photo</h2>
+					<div class="worksContainer"></div>
+					<div class="separator"></div>
+					<span class="addWork">Ajouter une photo</span>
+					<p>Supprimer la galerie</p>
+				  </div>
+				</div>
+	  
+				<div class="modal2">
+				  <button class="back">
+					<i class="fa-regular fa-arrow-left-long"></i>
+				  </button>
+				  <button class="closeModal2">
+					<i class="fa-regular fa-xmark"></i>
+				  </button>
+				  <h2>Ajout photo</h2>
+				  <form action="#" method="post" id="sendImg">
+					<div class="addImg">
+					  <a id="closeImg">
+						<i class="fa-regular fa-xmark"></i>
+					  </a>
+					  <i class="fa-regular fa-image"></i>
+					  <label for="uploadImg">+ Ajouter photo</label>
+					  <input type="file" id="uploadImg" />
+					  <img id="preview" />
+					  <p>jpg, png : 4mo max</p>
+					</div>
+					<label for="titre">Titre</label>
+					<input type="text" name="titre" id="titre" />
+					<label for="categorie">Catégorie</label>
+					<select name="categorie" id="categorie"></select>
+					<div class="separator"></div>
+					<a type="submit" class="valid">Valider</a>
+				  </form>
+				</div>
+			  </div>
 			<div id="filters"></div> <!-- Buttons filter -->
 			<div id="gallery"></div> <!-- Gallery Works -->
 		</section>
