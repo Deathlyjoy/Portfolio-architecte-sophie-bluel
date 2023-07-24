@@ -1,4 +1,4 @@
-// ---------- API ----------
+// ---------- Connexion API ----------
 const token = sessionStorage.getItem("accessToken");
 // Function to get all the data from the database
 async function dataBaseInfo(type) {
@@ -17,14 +17,11 @@ console.log(dataBaseInfo("categories"));
 const gallery = document.getElementById("gallery");
 const filters = document.getElementById("filters");
 const logMode = document.getElementById("login");
-const banner = document.querySelector(".edition");
-const buttonEdit = document.querySelectorAll(".btn-edit");
-
 const modalContainer = document.querySelector(".modalContainer");
 const worksContainer = document.querySelector(`.worksContainer`);
 const modal1 = document.querySelector(".modal1");
 const modal2 = document.querySelector(".modal2");
-const pushModal = document.querySelector(".publish");
+const pushModal = document.querySelector(".btn-edit");
 const upTitle = document.getElementById(`titre`);
 const selectCategory = document.getElementById("categorie");
 const submitButton = document.querySelector(".valid");
@@ -34,13 +31,20 @@ const dataWorks = new Set();
 const dataCategories = new Set();
 let file = "";
 
+
 // ---------- Display the interface modal admin mode ----------
 function editMode() {
+  const banner = document.querySelector(".edition");
+  const buttonEdit = document.querySelectorAll(".btn-edit");
   banner.style = "display : flex";
   logMode.innerText = "logout";
+
   for (const button of buttonEdit) {
     button.style = "display : flex";
-    modal1.style.display = `flex`;
+    button.addEventListener("click", (e) => {
+      modal1.style.display = `flex`;
+      modalContainer.style = `display : flex`;
+    });
   }
 }
 
@@ -115,7 +119,6 @@ async function init() {
     for (const categorie of categories) {
       dataCategories.add(categorie);
     }
-
     // Display elements depending on the mode (login/logout)
     if (token) { // Admin Mode
       editMode();
@@ -134,47 +137,42 @@ async function init() {
 }
 init()
 
+
 // ---------- Display the gallery depending on the filter ----------
 function displayGallery(filter = 0) {
   let filterData = dataWorks;
   console.log(filterData);
-
   // Check if a filter is selected
   if (filter != 0) {
-    filterData = [...dataWorks].filter(work => work.categoryId == filter);
+    filterData = [...dataWorks].filter((work) => work.categoryId == filter);
   }
   console.log(filter);
-
   // Clear the gallery
   gallery.innerHTML = "";
-
   // Generate the new filtered gallery
   for (const filterWork of filterData) {
     // Create Generic HTML Element project
     const work = filterWork;
     const project = document.createElement("figure"); 
     project.id = "project-" + work.id;
-
     // Add image to the project
     const imgProject = document.createElement("img");
     imgProject.src = work.imageUrl;
     imgProject.alt = work.title;
     project.appendChild(imgProject);
-
     // Add legend to the project
     const titleProject = document.createElement("figcaption");
     titleProject.textContent = work.title;
     project.appendChild(titleProject);
-
     // Attach project to the HTML element gallery
     gallery.appendChild(project);
   }
 }
 
+
 // ---------- Display the filter buttons ----------
 function displayFilterButton() {
   const filterBar = document.createDocumentFragment(); // Create a fragment to add the buttons and to avoid reflow
-
   // Create button filter with the categorie "All"
   const filterAll = document.createElement("div");
   filterAll.classList.add("active");
@@ -182,7 +180,6 @@ function displayFilterButton() {
   filterAll.dataset.id = 0;
   filterAll.textContent = "Tous";
   filterBar.appendChild(filterAll);
-
   // Create button filter for each category in the database
   for (const categorie of dataCategories) {
     const filterButton = document.createElement("div");
@@ -191,23 +188,18 @@ function displayFilterButton() {
     filterButton.textContent = categorie.name;
     filterBar.appendChild(filterButton);
   }
-
   // Attach filterBar to the HTML element filters
   filters.appendChild(filterBar);
-
   // Add event listener to filter works by category
   const buttonFilter = document.querySelectorAll(".filter");
   for (const button of buttonFilter) {
     button.addEventListener("click", (e) => {
       const clickedButton = e.target;
       const categoryId = parseInt(clickedButton.dataset.id);
-
       // Generate works depending on the selected filter
       displayGallery(categoryId);
-
       // Delete class "active" on the previous button selected
       document.querySelector(".active").classList.remove("active");
-
       // Add class "active" on the new button selected
       clickedButton.classList.add("active");
     });
@@ -221,23 +213,20 @@ pushModal.addEventListener("click", () => {
   modalContainer.style = `display : flex`;
   modal1.style.display = `flex`;
 });
-// -- Permet de passer de la modal 1 à 2
+// -- Permet de passer de la modal v1 à v2
 function RedirectionModale() {
   const addWork = document.querySelector(".addWork");
   addWork.addEventListener("click", () => {
     modal1.style.display = `none`;
     modal2.style.display = "flex";
   });
-
   const closeModal1 = document.querySelector(`.closeModal1`);
-
   closeModal1.addEventListener("click", () => {
     modal2.style.display = `none`;
     modal1.style.display = `none`;
     modalContainer.style = `display : none`;
   });
   const closeModal2 = document.querySelector(`.closeModal2`);
-
   closeModal2.addEventListener("click", () => {
     modal2.style.display = `none`;
     modal1.style.display = `none`;
@@ -245,10 +234,10 @@ function RedirectionModale() {
   });
 }
 
-// -- Test modal 2 ----
+// -- Test modal v2 ----
 function closeEvent() {}
 if (modal2) {
-  // PAssage de la modale 1 à 2 //
+  // Passage de la modale v1 à v2 //
   RedirectionModale();
   // --- Flèche retour ---//
   const back = document.querySelector(`.back`);
@@ -264,18 +253,14 @@ if (modal2) {
 function getSelectCategory() {
   // Récupère l'élément HTML 'select' avec l'ID 'categorie'
   const selectCategory = document.getElementById("categorie");
-
   // Parcourt toutes les catégories disponibles
   for (const categorie of dataCategories) {
     // Crée un nouvel élément HTML 'option'
     const option = document.createElement("option");
-
     // Définit le texte affiché dans l'option comme le nom de la catégorie
     option.textContent = categorie.name;
-
     // Définit la valeur de l'option comme l'ID de la catégorie
     option.value = categorie.id;
-
     // Ajoute l'option au select
     selectCategory.appendChild(option);
   }
@@ -286,39 +271,31 @@ function initAddModale() {
   const img = document.querySelector("#uploadImg");
   const closeImg = document.querySelector("#closeImg i");
   const labelUpload = document.querySelector("#sendImg label");
-
   // Ajoute un écouteur d'événements 'change' sur l'élément img
   img.addEventListener("change", (e) => {
     // Récupère le fichier sélectionné
     let tempFile = e.target.files[0];
-
     // Définit les types de fichiers autorisés
     const fileTypes = ["image/jpg", "image/png"];
     let testFormat = false;
-
     // Vérifie si le type de fichier sélectionné est autorisé
     for (let i = 0; i < fileTypes.length; i++) {
       if (tempFile.type === fileTypes[i]) {
         testFormat = true;
       }
     }
-
     // Si le type de fichier est autorisé
     if (testFormat) {
       // Vérifie si la taille du fichier est inférieure ou égale à 4Mo
       if (tempFile.size <= 1024 * 1024 * 1024) {
         // Récupère l'élément HTML avec l'ID 'preview'
         const preview = document.querySelector("#preview");
-
         // Crée une URL pour l'image sélectionnée
         const imageUrl = URL.createObjectURL(tempFile);
-
         // Définit l'URL de l'image sélectionnée comme source de l'élément 'preview'
         preview.src = imageUrl;
-
         // Définit le fichier sélectionné comme letiable globale
         file = tempFile;
-
         submitButton.style = `background : #1D6154`;
         // Fait apparaitre la croix pour supprimer l'image
         closeImg.style = `display : flex`;
@@ -352,7 +329,7 @@ function initAddModale() {
     formData.append("title", upTitle.value);
     formData.append("category", selectCategory.value);
     // Vérification si l'utilisateur a ajouté une image et un titre
-    if (file != "" && upTitle != "") {
+    if (file != "" && upTitle.value != "") {
       modal2.style.display = `none`;
       modal1.style.display = `flex`;
       alert("Votre projet à bien été rajouté ");
@@ -397,6 +374,7 @@ function logOutUser() {
   });
 }
 
+// ---------- Request API ----------
 // Cette fonction supprime un travail en envoyant une requête DELETE à l'API
 async function delWork(id) {
   // Envoie une requête DELETE à l'API pour supprimer le travail avec l'ID spécifié
