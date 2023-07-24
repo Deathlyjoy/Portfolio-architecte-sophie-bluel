@@ -46,15 +46,15 @@ function editMode() {
 
 // ---------- Display the gallery of the modal in edition mode ----------
 function showWorksInModal() {
-  //Vide le contenu de la fenêtre modale
+  //Clear the modal
   worksContainer.innerHTML = "";
-  // Pour chaque travail je :
+  // Create the gallery of the modal
   dataWorks.forEach((work) => {
     const figureModal = document.createElement(`figure`);
     const figureImgModal = document.createElement(`img`);
     const editButton = document.createElement(`button`);
     const delButton = document.createElement(`button`);
-    // récupère l'image et le titre
+    // Get the data from the database
     figureModal.dataset.id = work.id;
     figureImgModal.src = work.imageUrl;
     figureImgModal.alt = work.title;
@@ -62,19 +62,19 @@ function showWorksInModal() {
     editButton.classList.add(`editer`);
     delButton.innerHTML = `<i class="fa-solid fa-trash-can"></i>`;
     delButton.classList.add(`delete`);
-    // Ajout d'un event pour la suppression
+    // Add event for delete button
     delButton.addEventListener("click", async (e) => {
       const figure = e.target.closest("figure");
       const id = figure.dataset.id;
       const deleteCode = await confirmDelWork(id);
-      // chaque cas ... un code d'erreur différent
+      // Check error
       switch (deleteCode) {
         case 204:
           figure.remove();
           const galleryFigure = document.querySelector("#project-" + id);
           galleryFigure.remove();
 
-          // Permet de supp l'img dans le Set
+          // Clear image on the set
           for (const work of dataWorks) {
             if (work.id == id) {
               dataWorks.delete(work);
@@ -215,7 +215,7 @@ function displayFilterButton() {
 }
 
 
-//**************************************************************** */
+// ---------- Modal ----------
 // Permet d'appuyer et d'afficher la modale
 pushModal.addEventListener("click", () => {
   modalContainer.style = `display : flex`;
