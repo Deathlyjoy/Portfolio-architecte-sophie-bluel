@@ -32,13 +32,13 @@ const dataCategories = new Set();
 let file = "";
 
 
-// ---------- Display the interface modal admin mode ----------
+// ---------- Display the interface admin mode ----------
 function editMode() {
   const banner = document.querySelector(".edition");
   const buttonEdit = document.querySelectorAll(".btn-edit");
   banner.style = "display : flex";
   logMode.innerText = "logout";
-
+  // Add event for edit button
   for (const button of buttonEdit) {
     button.style = "display : flex";
     button.addEventListener("click", (e) => {
@@ -77,7 +77,6 @@ function showWorksInModal() {
           figure.remove();
           const galleryFigure = document.querySelector("#project-" + id);
           galleryFigure.remove();
-
           // Clear image on the set
           for (const work of dataWorks) {
             if (work.id == id) {
@@ -208,12 +207,12 @@ function displayFilterButton() {
 
 
 // ---------- Modal ----------
-// Permet d'appuyer et d'afficher la modale
+// Display the modal
 pushModal.addEventListener("click", () => {
   modalContainer.style = `display : flex`;
   modal1.style.display = `flex`;
 });
-// -- Permet de passer de la modal v1 à v2
+// Toggle modal v1 to v2
 function RedirectionModale() {
   const addWork = document.querySelector(".addWork");
   addWork.addEventListener("click", () => {
@@ -233,75 +232,51 @@ function RedirectionModale() {
     modalContainer.style = `display : none`;
   });
 }
-
-// -- Test modal v2 ----
-function closeEvent() {}
 if (modal2) {
-  // Passage de la modale v1 à v2 //
   RedirectionModale();
-  // --- Flèche retour ---//
+  // Display Back Arrow
   const back = document.querySelector(`.back`);
-  // Flèche permetant de sortir de la modale //
   back.addEventListener("click", () => {
     modal1.style.display = `flex`;
     modal2.style.display = `none`;
   });
-  closeEvent();
 }
 
 // --- Récupération dynamique des catégories pour ajout de projet ---
 function getSelectCategory() {
-  // Récupère l'élément HTML 'select' avec l'ID 'categorie'
   const selectCategory = document.getElementById("categorie");
-  // Parcourt toutes les catégories disponibles
   for (const categorie of dataCategories) {
-    // Crée un nouvel élément HTML 'option'
     const option = document.createElement("option");
-    // Définit le texte affiché dans l'option comme le nom de la catégorie
     option.textContent = categorie.name;
-    // Définit la valeur de l'option comme l'ID de la catégorie
     option.value = categorie.id;
-    // Ajoute l'option au select
     selectCategory.appendChild(option);
   }
 }
 
 function initAddModale() {
-  // Récupère l'élément HTML avec l'ID 'uploadImg'
   const img = document.querySelector("#uploadImg");
   const closeImg = document.querySelector("#closeImg i");
   const labelUpload = document.querySelector("#sendImg label");
-  // Ajoute un écouteur d'événements 'change' sur l'élément img
   img.addEventListener("change", (e) => {
-    // Récupère le fichier sélectionné
     let tempFile = e.target.files[0];
-    // Définit les types de fichiers autorisés
     const fileTypes = ["image/jpg", "image/png"];
     let testFormat = false;
-    // Vérifie si le type de fichier sélectionné est autorisé
     for (let i = 0; i < fileTypes.length; i++) {
       if (tempFile.type === fileTypes[i]) {
         testFormat = true;
       }
     }
-    // Si le type de fichier est autorisé
+    // Check if the format is authorized
     if (testFormat) {
-      // Vérifie si la taille du fichier est inférieure ou égale à 4Mo
+      // Check if the image-size is authorized
       if (tempFile.size <= 1024 * 1024 * 1024) {
-        // Récupère l'élément HTML avec l'ID 'preview'
         const preview = document.querySelector("#preview");
-        // Crée une URL pour l'image sélectionnée
         const imageUrl = URL.createObjectURL(tempFile);
-        // Définit l'URL de l'image sélectionnée comme source de l'élément 'preview'
         preview.src = imageUrl;
-        // Définit le fichier sélectionné comme letiable globale
         file = tempFile;
         submitButton.style = `background : #1D6154`;
-        // Fait apparaitre la croix pour supprimer l'image
         closeImg.style = `display : flex`;
-        // Permet de faire disparaitre le label depassant
         labelUpload.style = `display : none`;
-        // Reset le formulaire
         closeImg.addEventListener("click", () => {
           labelUpload.style = `display : flex`;
           upTitle.value = "";
@@ -310,54 +285,52 @@ function initAddModale() {
           file = "";
         });
       } else {
-        // Si la taille du fichier est supérieure à 4Mo, affiche une alerte
         return alert("taille incorrect 4mo max");
       }
     } else {
-      // Si le type de fichier n'est pas autorisé, affiche une alerte
       return alert("ce format est incorrect PNJ/JPG attendu");
     }
   });
 
-  // --- Requete POST pour envoyer un nouveau work ---
+  // --- Request POST to send a new work ---
   submitButton.addEventListener("click", async (e) => {
-    //permet d'éviter la page de s'ouvrir
+    // Prevent the default behavior of the form
     e.preventDefault();
-    // Création d'un objet FormData et ajout des données du formulaire
+    // Create a new FormData object and add data into the form
     const formData = new FormData();
     formData.append("image", file);
     formData.append("title", upTitle.value);
     formData.append("category", selectCategory.value);
-    // Vérification si l'utilisateur a ajouté une image et un titre
+    // Check if the user has added an image and a title
     if (file != "" && upTitle.value != "") {
       modal2.style.display = `none`;
       modal1.style.display = `flex`;
       alert("Votre projet à bien été rajouté ");
-      // Ajout du nouveau travail à la liste de travaux
+      //Add new work to the list of Works
       const newWork = await AddWork(formData);
       dataWorks.add(newWork);
-      // Rappel des fonctions pour les Works
+      // Call the related functions to Works
       showWorksInModal();
       displayGallery();
-      // Réinitialisation du formulaire
+      // Reset form
       upTitle.value = "";
       uploadImg.files[0] = "";
       preview.src = "";
       file = "";
       URL.revokeObjectURL(file);
     } else {
-      // Création d'un élément contenant un message d'erreur
+      // Create HTML element containing error message
       const error = document.createElement("p");
       error.innerText = "Titre, Catégorie, Taille < 4Mo requis";
       error.style.textAlign = `center`;
       error.style.color = `red`;
-      // Affichage du message d'erreur
+      // Display error message
       sendImg.appendChild(error);
     }
   });
 }
 
-// --- Fermeture de la modale ---
+// --- Close modal ---
 window.addEventListener("click", function (e) {
   if (e.target === modalContainer) {
     modalContainer.style.display = "none";
@@ -374,46 +347,45 @@ function logOutUser() {
   });
 }
 
-// ---------- Request API ----------
-// Cette fonction supprime un travail en envoyant une requête DELETE à l'API
+// ---------- Work Request API ----------
+// Clear the selected work by sending a request DELETE
 async function delWork(id) {
-  // Envoie une requête DELETE à l'API pour supprimer le travail avec l'ID spécifié
+  // Sending request DELETE to the API
   const response = await fetch("http://localhost:5678/api/works/" + id, {
     method: "DELETE",
     headers: {
-      // Ajoute l'en-tête d'autorisation avec le jeton d'accès
+      // Add authorization header with the access token
       Authorization: `Bearer ${token}`,
     },
   });
-  // Affiche la réponse dans la console
+  // Display response in the console
   console.log(response);
-  // Renvoie le code d'état de la réponse
+  // Return the status code of the response
   return response.status;
 }
 
-// Cette fonction ajoute un travail en envoyant une requête POST à l'API
+// Add a new work by sending a request POST
 async function AddWork(formData) {
-  // Envoie une requête POST à l'API pour ajouter un travail
+  // Sending request POST to the API
   const response = await fetch("http://localhost:5678/api/works", {
     method: "POST",
     headers: {
-      // Ajoute l'en-tête d'autorisation avec le jeton d'accès
+      // Add authorization header with the access token
       Authorization: `Bearer ${token}`,
     },
-    // Ajoute les données du formulaire à la requête
+    // Add form data to the request
     body: formData,
   });
-  // Si la réponse est OK, renvoie les données JSON de la réponse
+  // Return the JSON data of the response
   if (response.ok) {
     return response.json();
   }
 }
-// ** Confirmation pour suppression ** //
+
+// Display a confirmation message before deleting a work
 async function confirmDelWork(workId) {
   if (confirm("Êtes-vous sûr de vouloir supprimer ce projet ?")) {
     const deleteStatus = await delWork(workId);
     return deleteStatus;
   }
 }
-//
-
