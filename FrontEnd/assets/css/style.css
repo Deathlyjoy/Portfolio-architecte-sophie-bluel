@@ -332,14 +332,31 @@ footer nav ul {
 	left: 0;
 	z-index: 1;
 }
-  .modal1,
-  .modal2 {
+  .modal1 {
 	display: none;
 	flex-direction: column;
 	align-items: center;
 	position: relative;
 	width: 630px;
 	height: 730px;
+	background: white;
+	border-radius: 10px;
+  }
+
+  .modal1 p {
+	font-family: "Work Sans";
+	font-weight: 400;
+	color: #d65353;
+	text-align: center;
+  }
+
+  .modal2 {
+	display: none;
+	flex-direction: column;
+	align-items: center;
+	position: relative;
+	width: 630px;
+	height: 670px;
 	background: white;
 	border-radius: 10px;
   }
@@ -463,6 +480,7 @@ footer nav ul {
 	transform: scale(1.1);
 	cursor: pointer;
   }
+
   .valid {
 	font-family: "Syne";
 	color: white;
@@ -471,17 +489,20 @@ footer nav ul {
 	border: none;
 	padding: 12px 50px;
 	margin: 38px auto 23px auto;
-	width: 40%;
+	width: 55%;
 	text-align: center;
-	height: 16px;
+	height: 36px;
+  }
+  .valid:active {
+	color: white;
+	background: #a7a7a7;
+  }
+  .valid:hover {
+	transform: scale(1.1);
+	cursor: pointer;
   }
   
-  .modal1 p {
-	font-family: "Work Sans";
-	font-weight: 400;
-	color: #d65353;
-	text-align: center;
-  }
+
   #titre,
   #categorie {
 	width: 420px;
