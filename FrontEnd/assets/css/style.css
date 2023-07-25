@@ -146,22 +146,48 @@ li:hover {
 
 #filters {
 	display: flex;
-	justify-content: space-around;
-	margin-left: 10%;
-	margin-right: 10%;
-	margin-bottom: 5%;
-	margin-top: 4%;
+	justify-content: center;
+	/* margin-left: 10%;
+	margin-right: 10%;*/
+	margin-bottom: 51px;
+	margin-top: 21px;
 }
 
 .filter {
-	font-family: 'Syne';
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: #1d6154;
+	border: solid #1d6154 1px;
+	grid-gap: 10px;
+	border-radius: 60px;
+	font-family: "Syne";
+	font-size: 16px;
 	font-weight: 700;
-	color: #1D6154;
-	background-color: white;
-	width: 180px;
-	text-align: center;
-	border-radius: 60px ;
-	vertical-align: baseline;
+	line-height: 19px;
+	margin-right: 10px;
+	padding: 10px;
+	height: 37px;
+	cursor: pointer;
+  }
+
+.filter:first-child {
+	padding-left: 28px;
+	padding-right: 30px;
+}
+
+.filter:nth-child(2) {
+	padding-left: 20px;
+	padding-right: 22px;
+}
+
+.filter:nth-child(3) {
+	padding-left: 14px;
+	padding-right: 15px;
+}
+
+.filter:last-child {
+	margin-right: 0;
 }
 
 .filter:hover {
